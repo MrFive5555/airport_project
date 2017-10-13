@@ -54,7 +54,7 @@ Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
         landing.retrieve(moving_1);
         takeoff.retrieve(moving_2);
         land_wait += time - moving_1.started();
-        takeoff_wait += time - moving_1.started();
+        takeoff_wait += time - moving_2.started();
         num_landings++;
         num_takeoffs++;
         landing.serve();

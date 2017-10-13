@@ -75,6 +75,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -110,7 +113,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="class\Plane.cpp" />
+    <ClCompile Include="class\Random.cpp" />
+    <ClCompile Include="class\Runway.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="class\Plane.h" />
+    <ClInclude Include="class\Queue.h" />
+    <ClInclude Include="class\Random.h" />
+    <ClInclude Include="class\Runway.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

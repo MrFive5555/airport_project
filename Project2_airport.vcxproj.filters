@@ -18,5 +18,31 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="main.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="class\Plane.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="class\Random.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="class\Runway.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="class\Plane.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="class\Queue.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="class\Random.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="class\Runway.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

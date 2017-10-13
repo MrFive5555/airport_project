@@ -79,9 +79,17 @@ int main() // Airport simulation program
             case takeoff:
                 moving_plane_1.fly(current_time);
                 break;
-            case both:
+            case both_land_takeoff:
                 moving_plane_1.land(current_time);
                 moving_plane_2.fly(current_time);
+                break;
+            case both_land:
+                moving_plane_1.land(current_time);
+                moving_plane_2.land(current_time);
+                break;
+            case both_takeoff:
+                moving_plane_1.land(current_time);
+                moving_plane_2.land(current_time);
                 break;
             case idle:
                 run_idle(current_time);

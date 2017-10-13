@@ -50,7 +50,28 @@ Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
 /*Post: If the landing Queue has entries, its front Plane is copied to the parameter moving and a result land is returned. Otherwise, if the takeoff Queue has entries, its front Plane is copied to the parameter moving and a result takeoff is returned. Otherwise, idle is returned. Runway statistics are updated.
     Uses: class Extended_queue. */
 {
-    if (!landing.empty() && !takeoff.empty()) {
+    //=============================================================
+    auto bothLanding = [&]() {
+        landing.retrieve(moving_1);
+        landing.retrieve(moving_2);
+        land_wait += time - moving_1.started();
+        land_wait += time - moving_2.started();
+        num_landings++;
+        num_landings++;
+        landing.serve();
+        landing.serve();
+    };
+    auto bothTakeoff = [&]() {
+        takeoff.retrieve(moving_1);
+        takeoff.retrieve(moving_2);
+        takeoff_wait += time - moving_1.started();
+        takeoff_wait += time - moving_2.started();
+        num_takeoffs++;
+        num_takeoffs++;
+        takeoff.serve();
+        takeoff.serve();
+    };
+    auto bothLandingTakeoff = [&]() {
         landing.retrieve(moving_1);
         takeoff.retrieve(moving_2);
         land_wait += time - moving_1.started();
@@ -59,19 +80,43 @@ Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
         num_takeoffs++;
         landing.serve();
         takeoff.serve();
-        return both;
-    } else if (!landing.empty()) {
+    };
+    auto oneLanding = [&]() {
         landing.retrieve(moving_1);
         land_wait += time - moving_1.started();
         num_landings++;
         landing.serve();
-        return land;
-    } else if (!takeoff.empty()) {
+    };
+    auto oneTakeoff = [&]() {
         takeoff.retrieve(moving_1);
         takeoff_wait += time - moving_1.started();
         num_takeoffs++;
         takeoff.serve();
-        return Runway_activity::takeoff;
+    };
+    //=============================================================
+
+    if (queue_limit != 1 && landing.size() == queue_limit) {//takeoff queue is full 
+        bothLanding();
+        return both_land;
+    } else if (!landing.empty() && takeoff.empty()) {//takeoff queue is empty
+        if (landing.size() == 1) {
+            oneLanding();
+            return land;
+        } else {
+            bothLanding();
+            return both_land;
+        }
+    } else if (landing.empty() && !takeoff.empty()) { //landing queue is empty
+        if (takeoff.size() == 1) {
+            oneTakeoff();
+            return Runway_activity::takeoff;
+        } else {
+            bothTakeoff();
+            return both_takeoff;
+        }
+    } else if (!landing.empty() && !takeoff.empty()) { // all is not empty
+        bothLandingTakeoff();
+        return both_land_takeoff;
     } else {
         idle_time++;
         return idle;

@@ -70,18 +70,18 @@ int main() // Airport simulation program
             if (small_airport.can_depart(current_plane) != success)
                 current_plane.refuse();
         }
-        Plane moving_plane;
-        switch (small_airport.activity(current_time, moving_plane)) {
+        Plane moving_plane_1, moving_plane_2;
+        switch (small_airport.activity(current_time, moving_plane_1, moving_plane_2)) {
             // Let at most one Plane onto the Runway at current_time.
             case land:
-                moving_plane.land(current_time);
+                moving_plane_1.land(current_time);
                 break;
             case takeoff:
-                moving_plane.fly(current_time);
+                moving_plane_1.fly(current_time);
                 break;
             case both:
-                moving_plane.land(current_time);
-                moving_plane.fly(current_time);
+                moving_plane_1.land(current_time);
+                moving_plane_2.fly(current_time);
                 break;
             case idle:
                 run_idle(current_time);

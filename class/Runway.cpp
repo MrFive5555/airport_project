@@ -46,29 +46,36 @@ Uses: class Extended_queue. */
         num_takeoff_accepted++;
     return result;
 }
-Runway_activity Runway::activity(int time, Plane &moving)
+Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
 /*Post: If the landing Queue has entries, its front Plane is copied to the parameter moving and a result land is returned. Otherwise, if the takeoff Queue has entries, its front Plane is copied to the parameter moving and a result takeoff is returned. Otherwise, idle is returned. Runway statistics are updated.
     Uses: class Extended_queue. */
 {
-    Runway_activity in_progress = idle;
-    if (!landing.empty()) {
-        landing.retrieve(moving);
-        land_wait += time - moving.started();
+    if (!landing.empty() && !takeoff.empty()) {
+        landing.retrieve(moving_1);
+        takeoff.retrieve(moving_2);
+        land_wait += time - moving_1.started();
+        takeoff_wait += time - moving_1.started();
         num_landings++;
-        in_progress = land;
-        landing.serve();
-    }
-    if (!takeoff.empty()) {
-        takeoff.retrieve(moving);
-        takeoff_wait += time - moving.started();
         num_takeoffs++;
-        in_progress = in_progress == land ? both : Runway_activity::takeoff;
+        landing.serve();
+        takeoff.serve();
+        return both;
+    } else if (!landing.empty()) {
+        landing.retrieve(moving_1);
+        land_wait += time - moving_1.started();
+        num_landings++;
+        return land;
+        landing.serve();
+    } else if (!takeoff.empty()) {
+        takeoff.retrieve(moving_1);
+        takeoff_wait += time - moving_1.started();
+        num_takeoffs++;
+        return Runway_activity::takeoff;
         takeoff.serve();
     } else {
         idle_time++;
-        in_progress = idle;
+        return idle;
     }
-    return in_progress;
 }
 void Runway::shut_down(int time) const
 /* Post: Runway usage statistics are summarized and printed. */

@@ -9,7 +9,7 @@ public:
     Runway(int limit);
     Error_code can_land(const Plane &current);
     Error_code can_depart(const Plane &current);
-    Runway_activity activity(int time, Plane &moving);
+    Runway_activity activity(int time, Plane &moving_1, Plane &moving_2);
     void shut_down(int time) const;
 private:
     Extended_queue<Plane> landing;

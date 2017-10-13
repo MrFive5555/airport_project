@@ -1,8 +1,6 @@
 // main.cpp
 // the main function and other non-member functions
 #include<iostream>
-#include<stdexcept>
-#include<fstream>
 #include"class/Random.h"
 #include"class/Runway.h"
 using namespace std;
@@ -22,6 +20,19 @@ Uses: utility function user_says_yes */
 	cin >> queue_limit;
 	cout << "How many units of time will the simulation run?" << flush;
 	cin >> end_time;
+	bool acceptable;
+	do {
+		cout << "Expected number of arrivals per unit time?" << flush;
+		cin >> arrival_rate;
+		cout << "Expected number of departures per unit time?" << flush;
+		cin >> departure_rate;
+		if (arrival_rate < 0.0 || departure_rate < 0.0)
+			cerr << "These rates must be nonnegative." << endl;
+		else
+			acceptable = true;
+		if (acceptable && arrival_rate + departure_rate > 1.0)
+			cerr << "Safety Warning: This airport will become saturated. " << endl;
+	} while (!acceptable);
 }
 void run_idle(int time)
 /* Post: The specified time is printed with a message that the runway is idle. */
@@ -39,30 +50,20 @@ int main( ) // Airport simulation program
 	double arrival_rate, departure_rate;
 	initialize(end_time, queue_limit, arrival_rate, departure_rate);
 	// (a) same input->same result every time, better for debugging
-		// Random variable;
+		Random variable;
 	// (b) use different seed everytime the program runs
 		// Random variable(false);
 	Runway small_airport(queue_limit);
-	ifstream ifs_arr(F_ARRIVE);
-	ifstream ifs_dep(F_DEPART);
 	for (int current_time = 0; current_time < end_time; current_time ++ ) {
 		// loop over time intervals
-		// int number_arrivals = variable.poisson(arrival_rate);
-		int number_arrivals = 0;
-		ifs_arr>>number_arrivals;
-		if(!ifs_arr)
-			throw runtime_error("insufficient arr stub");
+		int number_arrivals = variable.poisson(arrival_rate);
 		// current arrival requests
 		for (int i = 0; i < number_arrivals; i ++ ) {
 			Plane current_plane(flight_number ++ , current_time, arriving);
 			if (small_airport. can_land(current_plane) != success)
 				current_plane.refuse( );
 		}
-		// int number_departures = variable.poisson(departure_rate);
-		int number_departures = 0;
-		ifs_dep>>number_departures;
-		if(!ifs_dep)
-			throw runtime_error("insufficient dep stub");
+		int number_departures = variable.poisson(departure_rate);
 		// current departure requests
 		for (int j = 0; j < number_departures; j ++ ) {
 			Plane current_plane(flight_number ++ , current_time, departing);
@@ -82,8 +83,6 @@ int main( ) // Airport simulation program
 			run_idle(current_time);
 		}
 	}
-	ifs_arr.close();
-	ifs_dep.close();
 	small_airport. shut_down(end_time);
 }
 

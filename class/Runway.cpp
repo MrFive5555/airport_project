@@ -50,18 +50,19 @@ Runway_activity Runway::activity(int time, Plane &moving)
 /*Post: If the landing Queue has entries, its front Plane is copied to the parameter moving and a result land is returned. Otherwise, if the takeoff Queue has entries, its front Plane is copied to the parameter moving and a result takeoff is returned. Otherwise, idle is returned. Runway statistics are updated.
     Uses: class Extended_queue. */
 {
-    Runway_activity in_progress;
+    Runway_activity in_progress = idle;
     if (!landing.empty()) {
         landing.retrieve(moving);
         land_wait += time - moving.started();
         num_landings++;
         in_progress = land;
         landing.serve();
-    } else if (!takeoff.empty()) {
+    }
+    if (!takeoff.empty()) {
         takeoff.retrieve(moving);
         takeoff_wait += time - moving.started();
         num_takeoffs++;
-        in_progress = Runway_activity::takeoff;
+        in_progress = in_progress == land ? both : Runway_activity::takeoff;
         takeoff.serve();
     } else {
         idle_time++;

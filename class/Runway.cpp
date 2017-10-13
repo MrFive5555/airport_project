@@ -64,14 +64,14 @@ Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
         landing.retrieve(moving_1);
         land_wait += time - moving_1.started();
         num_landings++;
-        return land;
         landing.serve();
+        return land;
     } else if (!takeoff.empty()) {
         takeoff.retrieve(moving_1);
         takeoff_wait += time - moving_1.started();
         num_takeoffs++;
-        return Runway_activity::takeoff;
         takeoff.serve();
+        return Runway_activity::takeoff;
     } else {
         idle_time++;
         return idle;

@@ -53,33 +53,33 @@ Runway_activity Runway::activity(int time, Plane &moving_1, Plane &moving_2)
     //=============================================================
     auto bothLanding = [&]() {
         landing.retrieve(moving_1);
+        landing.serve();
         landing.retrieve(moving_2);
+        landing.serve();
         land_wait += time - moving_1.started();
         land_wait += time - moving_2.started();
         num_landings++;
         num_landings++;
-        landing.serve();
-        landing.serve();
     };
     auto bothTakeoff = [&]() {
         takeoff.retrieve(moving_1);
+        takeoff.serve();
         takeoff.retrieve(moving_2);
+        takeoff.serve();
         takeoff_wait += time - moving_1.started();
         takeoff_wait += time - moving_2.started();
         num_takeoffs++;
         num_takeoffs++;
-        takeoff.serve();
-        takeoff.serve();
     };
     auto bothLandingTakeoff = [&]() {
         landing.retrieve(moving_1);
+        landing.serve();
         takeoff.retrieve(moving_2);
+        takeoff.serve();
         land_wait += time - moving_1.started();
         takeoff_wait += time - moving_2.started();
         num_landings++;
         num_takeoffs++;
-        landing.serve();
-        takeoff.serve();
     };
     auto oneLanding = [&]() {
         landing.retrieve(moving_1);
